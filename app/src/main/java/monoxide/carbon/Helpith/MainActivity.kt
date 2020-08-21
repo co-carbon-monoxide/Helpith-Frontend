@@ -2,6 +2,8 @@ package monoxide.carbon.Helpith
 
 import android.os.AsyncTask
 import android.os.Bundle
+import android.view.View
+import android.content.Intent
 import android.widget.CalendarView
 import android.widget.CalendarView.OnDateChangeListener
 import android.widget.TextView
@@ -29,9 +31,10 @@ class MainActivity : AppCompatActivity() {
 
     private inner class DateChangeListener : CalendarView.OnDateChangeListener {
         override fun onSelectedDayChange(calendarView: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
-            val textview2: TextView = findViewById(R.id.textView2)
             val displayMonth = month + 1
-            textview2.text = "$year/$displayMonth/$dayOfMonth"
+            val intent = Intent(applicationContext, ListActivity::class.java)
+            intent.putExtra("HELPITH_DATE", "$year/$displayMonth/$dayOfMonth")
+            startActivity(intent)
         }
     }
 
