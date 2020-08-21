@@ -1,23 +1,38 @@
 package monoxide.carbon.Helpith
 
 import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.CalendarView
+import android.widget.CalendarView.OnDateChangeListener
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
-import java.io.IOError
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val calenderView: CalendarView = findViewById(R.id.calendarView)
+        val listener = DateChangeListener()
+        calenderView.setOnDateChangeListener(listener)
+    }
+
+    private inner class DateChangeListener : CalendarView.OnDateChangeListener {
+        override fun onSelectedDayChange(calendarView: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
+            val textview2: TextView = findViewById(R.id.textView2)
+            val displayMonth = month + 1
+            textview2.text = "$year/$displayMonth/$dayOfMonth"
+        }
     }
 
     inner class HitAPITask: AsyncTask<String, String, String>() {
