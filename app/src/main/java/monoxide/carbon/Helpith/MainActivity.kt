@@ -4,6 +4,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.view.View
 import android.content.Intent
+import android.widget.Button
 import android.widget.CalendarView
 import android.widget.CalendarView.OnDateChangeListener
 import android.widget.TextView
@@ -27,6 +28,13 @@ class MainActivity : AppCompatActivity() {
         val calenderView: CalendarView = findViewById(R.id.calendarView)
         val listener = DateChangeListener()
         calenderView.setOnDateChangeListener(listener)
+
+        val configButton: Button = findViewById(R.id.config_button)
+        configButton.setOnClickListener {
+            val intent = Intent(applicationContext, ConfigActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     private inner class DateChangeListener : CalendarView.OnDateChangeListener {

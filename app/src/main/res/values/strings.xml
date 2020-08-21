@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Helpith</string>
+    <string name="family_config_text">家族の設定</string>
+    <string name="return_button_text">戻る</string>
 </resources>
