@@ -47,6 +47,18 @@
         app:layout_constraintVertical_bias="0.916" />
 
     <Button
+        android:id="@+id/evaluation_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="評価✨"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.331"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        app:layout_constraintVertical_bias="0.13" />
+
+    <Button
         android:id="@+id/hit_api_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

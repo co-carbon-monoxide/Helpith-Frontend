@@ -25,6 +25,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val evaluationButton: Button = findViewById(R.id.evaluation_button)
+        evaluationButton.setOnClickListener{
+            val intent = Intent(applicationContext, EvaluationActivity::class.java)
+            startActivity(intent)
+        }
+
         val hitAPIButton: Button = findViewById(R.id.hit_api_button)
         hitAPIButton.setOnClickListener {
             tasksAPI.index()
