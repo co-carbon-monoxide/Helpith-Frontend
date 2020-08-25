@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         val hitAPIButton: Button = findViewById(R.id.hit_api_button)
         hitAPIButton.setOnClickListener {
-            tasksAPI.index()
+            println(tasksAPI.index())
         }
     }
 

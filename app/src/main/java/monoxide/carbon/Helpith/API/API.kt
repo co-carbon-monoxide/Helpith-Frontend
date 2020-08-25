@@ -15,24 +15,24 @@ private fun getCompleteUrl(url: String): String {
 }
 
 class API (private val controllerName: String) {
-    fun index () {
-        HitAPITask().execute(getCompleteUrl(controllerName), "GET")
+    fun index (): String? {
+        return HitAPITask().execute(getCompleteUrl(controllerName), "GET").get()
     }
 
-    fun show (id: String) {
-        HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "GET")
+    fun show (id: String): String? {
+        return HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "GET").get()
     }
 
-    fun create () {
-        HitAPITask().execute(getCompleteUrl(controllerName), "POST")
+    fun create (): String? {
+        return HitAPITask().execute(getCompleteUrl(controllerName), "POST").get()
     }
 
-    fun update (id: String) {
-        HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "PATCH")
+    fun update (id: String): String? {
+        return HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "PATCH").get()
     }
 
-    fun destroy (id: String) {
-        HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "DELETE")
+    fun destroy (id: String): String? {
+        return HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "DELETE").get()
     }
 }
 
