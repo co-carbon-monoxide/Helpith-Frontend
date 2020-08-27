@@ -34,6 +34,11 @@ class API (private val controllerName: String) {
     fun destroy (id: String): String? {
         return HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "DELETE").get()
     }
+
+    // ONLY: Lists
+    fun showByDate (familyId: String, date: String): String? {
+        return HitAPITask().execute(getCompleteUrl("lists/$familyId/$date"), "GET").get()
+    }
 }
 
 class HitAPITask: AsyncTask<String, String, String>() {

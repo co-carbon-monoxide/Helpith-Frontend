@@ -1,10 +1,14 @@
 package monoxide.carbon.Helpith
 
 import android.os.Bundle
-import android.text.Layout
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import monoxide.carbon.Helpith.API.API
+import org.json.JSONArray
+import org.json.JSONObject
 
 class ListActivity: AppCompatActivity() {
 
@@ -13,34 +17,44 @@ class ListActivity: AppCompatActivity() {
 
         val activityList = layoutInflater.inflate(R.layout.activity_list, null)
 
+        val familiesAPI = API("families")
+        val family = familiesAPI.show("5") ?: throw error("empty family!")
+        val familyJSON = JSONObject(family)
+        val users = familyJSON.getJSONArray("users")
+
         val date = intent.getStringExtra("HELPITH_DATE")
         val helpithListDataTextView: TextView = activityList.findViewById(R.id.helpith_list_date)
         helpithListDataTextView.text = date
+
+        val listsAPI = API("lists")
+        val replacedDate = date.replace('/', '-')
+        val list = listsAPI.showByDate("5", replacedDate)
+        println("リスト")
+        println(list)
 
         val button: Button = activityList.findViewById(R.id.button)
         button.setOnClickListener {
             finish()
         }
 
-        // val tableRowHeader: TableRow = activityList.findViewById(R.id.helpith_list_table_row_header)
-        // val helpithListTable = layoutInflater.inflate(R.layout.helpith_list_table_row_text, null)
+        val viewGroup = activityList.findViewById<View>(R.id.tableLayout) as ViewGroup
 
-        val tableLayout: TableLayout = activityList.findViewById(R.id.tableLayout)
-        val tableRowHeaderParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+        val tableRow = TableRow(this) as ViewGroup
 
-        val tableRowHeader = TableRow(this).also {
-            val textView = TextView(this)
-            val textViewParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            textViewParams.weight = 1f
-            textView.text = "メンバー"
-            it.addView(textView, textViewParams)
+        layoutInflater.inflate(R.layout.helpith_list_table_row_text, tableRow)
+        val textView = tableRow.getChildAt(0) as TextView
+        textView.text = "メンバー"
+
+        for (i in 0 until users.length()) {
+            val user = users[i] as JSONObject
+            val name = user.optString("name") ?: throw error("valid error name")
+
+            layoutInflater.inflate(R.layout.helpith_list_table_row_text, tableRow)
+            val nameTextView = tableRow.getChildAt(i + 1) as TextView
+            nameTextView.text = name
         }
 
-        tableLayout.addView(tableRowHeader, tableRowHeaderParams)
-
-        val tv = TextView(this)
-        tv.text = "ttttt"
-        activityList.findViewById<ConstraintLayout>(R.id.helpith_list_constraint_layout).addView(tv)
+        viewGroup.addView(tableRow)
 
         setContentView(activityList)
     }
