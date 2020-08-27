@@ -6,4 +6,5 @@
     android:layout_weight="1"
     android:textAlignment="center"
     android:textSize="14sp"
+    android:text="sampleText"
 />
