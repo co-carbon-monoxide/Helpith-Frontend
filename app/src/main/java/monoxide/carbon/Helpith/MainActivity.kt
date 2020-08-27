@@ -30,11 +30,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, EvaluationActivity::class.java)
             startActivity(intent)
         }
-
-        val hitAPIButton: Button = findViewById(R.id.hit_api_button)
-        hitAPIButton.setOnClickListener {
-            println(tasksAPI.index())
-        }
     }
 
     private inner class DateChangeListener : CalendarView.OnDateChangeListener {
