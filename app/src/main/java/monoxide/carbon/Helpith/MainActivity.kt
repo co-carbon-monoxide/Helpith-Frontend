@@ -5,15 +5,13 @@ import android.content.Intent
 import android.widget.Button
 import android.widget.CalendarView
 import androidx.appcompat.app.AppCompatActivity
-import monoxide.carbon.Helpith.API.API
+import monoxide.carbon.Helpith.API.HelpithAPI
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val tasksAPI = API("tasks")
 
         val calenderView: CalendarView = findViewById(R.id.calendarView)
         val listener = DateChangeListener()
