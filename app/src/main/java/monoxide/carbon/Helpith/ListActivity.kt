@@ -59,25 +59,30 @@ class ListActivity: AppCompatActivity() {
                     nameTextView.text = name
                 })
             }
+
+            val houseWorkAPI = HouseWorkAPI()
+            val houseWorkEditText: EditText = findViewById(R.id.house_work_edit_text)
+            val addHouseWorkButton: Button = findViewById(R.id.add_house_work_button)
+
+            handler.post( Runnable () {
+                addHouseWorkButton.setOnClickListener {
+                    val text = houseWorkEditText.text
+                    val houseWorkRequest = HouseWorkRequest(
+                        name = "testHouseWork",
+                        time = 20,
+                        list_id = 1
+                    )
+                    if (!TextUtils.isEmpty(text)) {
+                        println("記入されています: $text")
+                        thread {
+                            houseWorkAPI.create(houseWorkRequest)
+                        }
+                        houseWorkEditText.text.clear()
+                    }
+                }
+            })
         }
 
         viewGroup.addView(tableRow)
-
-
-
-//        val houseWorkAPI = API("house_works")
-//        val houseWorkEditText: EditText = activityList.findViewById(R.id.house_work_edit_text)
-//        val addHouseWorkButton: Button = activityList.findViewById(R.id.add_house_work_button)
-//        addHouseWorkButton.setOnClickListener {
-//            val text = houseWorkEditText.text
-//            if (!TextUtils.isEmpty(text)) {
-//                println("記入されています: $text")
-//                houseWorkAPI.create(
-//                    """{"name": "testHouseWork","time": "20","list_id": "1"}"""
-//                )
-//                houseWorkEditText.text.clear()
-//            }
-//        }
     }
-
 }

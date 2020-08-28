@@ -1,7 +1,9 @@
 package monoxide.carbon.Helpith.API
 
 data class HouseWorkRequest(
-    val name: String
+    val name: String,
+    val time: Int,
+    val list_id: Int
 )
 
 private const val rootControllerName: String = "house_works"
