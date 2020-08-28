@@ -1,96 +1,68 @@
 package monoxide.carbon.Helpith.API
 
-import android.os.AsyncTask
-import org.json.JSONException
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.result.Result
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
-private fun getCompleteUrl(url: String): String {
+fun getCompleteUrl(url: String): String {
     val rootPath = "http://10.0.2.2:3000/api/v1/"
     return rootPath + url
 }
 
-class API (private val controllerName: String) {
+open class HelpithAPI<T : Any?>(val controllerName: String, classObject: Class<T>) {
+    private val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+    private val requestAdapter: JsonAdapter<T> = moshi.adapter(classObject)
+    private val header: HashMap<String, String> = hashMapOf("Content-Type" to "application/json")
+
     fun index (): String? {
-        return HitAPITask().execute(getCompleteUrl(controllerName), "GET").get()
-    }
-
-    fun show (id: String): String? {
-        return HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "GET").get()
-    }
-
-    fun create (): String? {
-        return HitAPITask().execute(getCompleteUrl(controllerName), "POST").get()
-    }
-
-    fun update (id: String): String? {
-        return HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "PATCH").get()
-    }
-
-    fun destroy (id: String): String? {
-        return HitAPITask().execute(getCompleteUrl("$controllerName/$id"), "DELETE").get()
-    }
-
-    // ONLY: Lists
-    fun showByDate (familyId: String, date: String): String? {
-        return HitAPITask().execute(getCompleteUrl("lists/$familyId/$date"), "GET").get()
-    }
-}
-
-class HitAPITask: AsyncTask<String, String, String>() {
-    override fun doInBackground(vararg params: String?): String? {
-        var connection: HttpURLConnection? = null
-        var reader: BufferedReader? = null
-        val buffer: StringBuffer
-
-        try {
-            val url = URL(params[0])
-            val httpMethod = params[1]
-            connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = httpMethod
-            connection.connect()
-
-            val stream = connection.inputStream
-            reader = BufferedReader(InputStreamReader(stream))
-            buffer = StringBuffer()
-            var line: String?
-            while (true) {
-                line = reader.readLine()
-                if (line == null) {
-                    break
-                }
-                buffer.append(line)
+        val (_, _, result) = Fuel.get(getCompleteUrl(controllerName))
+            .responseString()
+        return when(result) {
+            is Result.Failure -> {
+                val ex = result.getException()
+                ex.printStackTrace()
+                null
             }
-
-            val jsonText = buffer.toString()
-            return jsonText
-        } catch (e: MalformedURLException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        finally {
-            connection?.disconnect()
-            try {
-                reader?.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
+            is Result.Success -> {
+                result.get()
             }
         }
-
-        return null
     }
 
-    override fun onPostExecute(result: String?) {
-        super.onPostExecute(result)
-        if (result == null) return
-        println(result)
+    fun show (id: Int): String? {
+        val (_, _, result) = Fuel.get(getCompleteUrl("$controllerName/$id"))
+            .responseString()
+        println(getCompleteUrl("$controllerName/$id"))
+        return when(result) {
+            is Result.Failure -> {
+                val ex = result.getException()
+                ex.printStackTrace()
+                null
+            }
+            is Result.Success -> {
+                val res = result.get()
+                println("result.get(): $res")
+                result.get()
+            }
+        }
+    }
+
+    fun create (apiRequest: T): String? {
+        val (_, _, result) = Fuel.post(getCompleteUrl(controllerName))
+            .header(header)
+            .body(requestAdapter.toJson(apiRequest))
+            .responseString()
+        return when (result) {
+            is Result.Failure -> {
+                val ex = result.getException()
+                ex.printStackTrace()
+                null
+            }
+            is Result.Success -> {
+                result.get()
+            }
+        }
     }
 }
