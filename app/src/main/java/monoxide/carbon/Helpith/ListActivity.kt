@@ -1,8 +1,11 @@
 package monoxide.carbon.Helpith
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -18,6 +21,7 @@ class ListActivity: AppCompatActivity() {
 
     val handler = Handler()
     var userSize = 0
+    var listId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         /*
@@ -28,6 +32,9 @@ class ListActivity: AppCompatActivity() {
          */
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Helpith リスト"
 
         // 日付をセット
         val date = intent.getStringExtra("HELPITH_DATE")
@@ -52,14 +59,38 @@ class ListActivity: AppCompatActivity() {
         viewGroup.addView(tableRow)
         // end
 
-        val button: Button = findViewById(R.id.button)
-        button.setOnClickListener {
-            finish()
-        }
-
         if (date != null) {
             displayHelpithList(date)
         }
+
+        val openHouseWorkButton: Button = findViewById(R.id.open_house_work_button)
+        openHouseWorkButton.setOnClickListener {
+            val intent = Intent(applicationContext, NewHouseWorkActivity::class.java)
+            intent.putExtra("LISTID", listId)
+            startActivityForResult(intent, 1000)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+
+        val newHouseWorkName = intent?.extras?.getString("NEW_HOUSE_WORK_NAME")?: ""
+        addHouseWorkRow(newHouseWorkName)
+    }
+
+    fun addHouseWorkRow (name: String) {
+        val viewGroup = findViewById<View>(R.id.tableLayout) as ViewGroup
+        val tableRow = TableRow(this) as ViewGroup
+        layoutInflater.inflate(R.layout.helpith_list_table_row_text, tableRow)
+        val houseWorkText = tableRow.getChildAt(0) as TextView
+        houseWorkText.text = name
+
+        for (i in 0 until userSize) {
+            layoutInflater.inflate(R.layout.helpith_list_table_row_button, tableRow)
+            val emptyButton = tableRow.getChildAt(i + 1) as Button
+            emptyButton.text = i.toString()
+        }
+        viewGroup.addView(tableRow)
     }
 
     fun displayHelpithList (date: String) {
@@ -68,66 +99,25 @@ class ListActivity: AppCompatActivity() {
             val replacedDate = date.replace('/', '-')
             val todayList = listAPI.showByDate(5, replacedDate)
             val listJson = JSONObject(todayList)
-            println(listJson)
             val houseWorks = listJson.getJSONArray("house_works")
-            val listId = listJson.optString("id").toInt()
-            setAddHouseWork(listId)
+            listId = listJson.optString("id").toInt()
 
             handler.post( Runnable () {
                 val viewGroup = findViewById<View>(R.id.tableLayout) as ViewGroup
                 for (i in 0 until houseWorks.length()) {
                     val houseWork = houseWorks[i] as JSONObject
                     val houseWorkName = houseWork.optString("name")
-                    val tableRow = TableRow(this) as ViewGroup
-                    layoutInflater.inflate(R.layout.helpith_list_table_row_text, tableRow)
-                    val textView = tableRow.getChildAt(0) as TextView
-                    textView.text = houseWorkName
-
-                    for (j in 0 until userSize) {
-                        layoutInflater.inflate(R.layout.helpith_list_table_row_text, tableRow)
-                        val emptyTextView = tableRow.getChildAt(j + 1) as TextView
-                        emptyTextView.text = ""
-                    }
-                    viewGroup.addView(tableRow)
+                    addHouseWorkRow(houseWorkName)
                 }
             })
         }
     }
 
-    fun setAddHouseWork (listId: Int) {
-        val houseWorkAPI = HouseWorkAPI()
-        val houseWorkEditText: EditText = findViewById(R.id.house_work_edit_text)
-        val addHouseWorkButton: Button = findViewById(R.id.add_house_work_button)
-        val viewGroup = findViewById<View>(R.id.tableLayout) as ViewGroup
-        handler.post( Runnable () {
-            addHouseWorkButton.setOnClickListener {
-                val text = houseWorkEditText.text
-                val houseWorkRequest = HouseWorkRequest(
-                    name = text.toString(),
-                    time = 20,
-                    list_id = listId
-                )
-                if (!TextUtils.isEmpty(text)) {
-                    thread {
-                        houseWorkAPI.create(houseWorkRequest)
-                    }
-
-                    val tableRow = TableRow(this) as ViewGroup
-                    layoutInflater.inflate(R.layout.helpith_list_table_row_text, tableRow)
-                    val textView = tableRow.getChildAt(0) as TextView
-                    textView.text = text.toString()
-
-                    println("-------------------------------- $userSize")
-                    for (i in 0 until userSize) {
-                        layoutInflater.inflate(R.layout.helpith_list_table_row_text, tableRow)
-                        val emptyTextView = tableRow.getChildAt(i + 1) as TextView
-                        emptyTextView.text = ""
-                    }
-                    viewGroup.addView(tableRow)
-
-                    houseWorkEditText.text.clear()
-                }
-            }
-        })
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> finish()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 }

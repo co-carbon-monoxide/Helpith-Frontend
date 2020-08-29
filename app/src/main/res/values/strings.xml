@@ -3,4 +3,15 @@
     <string name="family_config_text">家族の設定</string>
     <string name="return_button_text">戻る</string>
     <string name="helpith_list_member">メンバー</string>
+    <string name="helpith_list_title">Helpith リスト</string>
+    <string name="helpith_list_date">HelpithListDate</string>
+    <string name="add_house_work">追加する</string>
+    <string name="config_button_text">設定</string>
+    <string name="evaluation_button_text">評価✨</string>
+    <string name="review_calender_text">ふりかえりカレンダー</string>
+    <string name="new_house_work_title">今日の家事を追加する</string>
+    <string name="house_work_name_text_field_text">家事の名前</string>
+    <string name="house_work_time_text_field_text">取り組む時間(分)</string>
+    <string name="house_work_register_button_text">登録する</string>
+    <string name="house_work_return_button_text">戻る</string>
 </resources>
