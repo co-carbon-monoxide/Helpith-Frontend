@@ -43,6 +43,22 @@
             android:inputType="number"
             android:padding="10dp" />
 
+        <TextView
+            android:id="@+id/house_work_user_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/house_work_user_text_field_text" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:entries="@array/user_list"
+            android:spinnerMode="dialog" />
+
         <Button
             android:id="@+id/house_work_register_button"
             android:layout_width="match_parent"

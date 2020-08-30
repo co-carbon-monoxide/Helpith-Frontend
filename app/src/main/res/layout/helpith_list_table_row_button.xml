@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Button
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.AppCompat.Button"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_weight="1"
+    android:text="button"
     android:textAlignment="center"
     android:textSize="14sp"
-    android:text="button"
-/>
+    android:visibility="visible" />

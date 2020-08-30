@@ -6,12 +6,14 @@ import android.widget.Button
 import android.widget.CalendarView
 import androidx.appcompat.app.AppCompatActivity
 import monoxide.carbon.Helpith.API.FamilyAPI
+import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
     var userNames: Array<String?> = arrayOf()
+    var userJson: JSONArray = JSONArray()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             val myFamily = familyAPI.show(family_id) ?: throw error("empty family!")
             val familyJson = JSONObject(myFamily)
             val usersJson = familyJson.getJSONArray("users")
+            userJson = usersJson
             for (i in 0 until usersJson.length()) {
                 val user = usersJson[i] as JSONObject
                 val name = user.optString("name")
@@ -64,6 +67,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, ListActivity::class.java)
             intent.putExtra("HELPITH_DATE", "$year/$displayMonth/$dayOfMonth")
             intent.putExtra("USER_NAMES", userNames)
+            intent.putExtra("USERS_JSON", userJson.toString())
             startActivity(intent)
         }
     }
