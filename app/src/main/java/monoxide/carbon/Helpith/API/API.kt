@@ -43,7 +43,6 @@ open class HelpithAPI<T : Any?>(val controllerName: String, classObject: Class<T
             }
             is Result.Success -> {
                 val res = result.get()
-                println("result.get(): $res")
                 result.get()
             }
         }
@@ -61,6 +60,23 @@ open class HelpithAPI<T : Any?>(val controllerName: String, classObject: Class<T
                 null
             }
             is Result.Success -> {
+                result.get()
+            }
+        }
+    }
+
+    fun delete (id: Int): String? {
+        val (_, _, result) = Fuel.delete(getCompleteUrl("$controllerName/$id"))
+            .responseString()
+        println(getCompleteUrl("$controllerName/$id"))
+        return when(result) {
+            is Result.Failure -> {
+                val ex = result.getException()
+                ex.printStackTrace()
+                null
+            }
+            is Result.Success -> {
+                val res = result.get()
                 result.get()
             }
         }
