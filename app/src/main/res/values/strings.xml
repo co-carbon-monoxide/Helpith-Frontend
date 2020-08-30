@@ -15,6 +15,11 @@
     <string name="house_work_register_button_text">登録する</string>
     <string name="house_work_return_button_text">戻る</string>
     <string name="house_work_user_text_field_text">担当する人</string>
+    <string name="add_user_label_text">追加する</string>
+    <string name="add_user_button_text">追加</string>
+    <string name="change_user_name_button_text">変更</string>
+    <string name="change_user_name_label">変更する</string>
+    <string name="delete_user_name_button">削除</string>
 
     <string-array name="user_list">
     </string-array>

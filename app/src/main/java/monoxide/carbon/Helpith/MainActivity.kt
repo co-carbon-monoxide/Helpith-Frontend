@@ -14,15 +14,16 @@ class MainActivity : AppCompatActivity() {
 
     var userNames: Array<String?> = arrayOf()
     var userJson: JSONArray = JSONArray()
+    val family_id: Int = 5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val family_id = 5
-
         val familyAPI = FamilyAPI()
         thread {
+            userNames = arrayOf()
+            userJson = JSONArray()
             val myFamily = familyAPI.show(family_id) ?: throw error("empty family!")
             val familyJson = JSONObject(myFamily)
             val usersJson = familyJson.getJSONArray("users")
@@ -39,6 +40,25 @@ class MainActivity : AppCompatActivity() {
         openEvaluationActivityByClickEvent()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val familyAPI = FamilyAPI()
+        thread {
+            userNames = arrayOf()
+            userJson = JSONArray()
+            val myFamily = familyAPI.show(family_id) ?: throw error("empty family!")
+            val familyJson = JSONObject(myFamily)
+            val usersJson = familyJson.getJSONArray("users")
+            userJson = usersJson
+            for (i in 0 until usersJson.length()) {
+                val user = usersJson[i] as JSONObject
+                val name = user.optString("name")
+                userNames += name
+            }
+        }
+    }
+
     private fun setCalenderViewClickEvent () {
         val calenderView: CalendarView = findViewById(R.id.calendarView)
         val listener = DateChangeListener()
@@ -49,6 +69,8 @@ class MainActivity : AppCompatActivity() {
         val configButton: Button = findViewById(R.id.config_button)
         configButton.setOnClickListener {
             val intent = Intent(applicationContext, ConfigActivity::class.java)
+            intent.putExtra("USERS_JSON", userJson.toString())
+            intent.putExtra("FAMILY_ID", family_id)
             startActivity(intent)
         }
     }
